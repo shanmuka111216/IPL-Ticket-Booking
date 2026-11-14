@@ -202,3 +202,15 @@ footer {
         width: 100%;
     }
 }
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #16a332;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    z-index: 9999;
+}
