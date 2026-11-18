@@ -80,3 +80,143 @@ quantity.addEventListener("input", updateSummary);
 
 // Display initial summary
 updateSummary(false);
+
+// Activity 8: Team Filter
+const teamFilter = document.getElementById("teamFilter");
+const matchCards = document.querySelectorAll(".match-card");
+
+if (teamFilter) {
+    teamFilter.addEventListener("change", function () {
+        const selectedTeam = teamFilter.value;
+
+        matchCards.forEach(card => {
+            const teams = card.dataset.team.split(" ");
+
+            if (selectedTeam === "all" || teams.includes(selectedTeam)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+}
+
+// Grid View
+const gridView = document.getElementById("gridView");
+const listView = document.getElementById("listView");
+const matchGrid = document.getElementById("matchGrid");
+
+if (gridView && matchGrid) {
+    gridView.addEventListener("click", function () {
+        matchGrid.classList.remove("list-view");
+    });
+}
+
+// List View
+if (listView && matchGrid) {
+    listView.addEventListener("click", function () {
+        matchGrid.classList.add("list-view");
+    });
+}
+// Mobile Hamburger Menu
+const menuToggle = document.getElementById("menuToggle");
+const mainNav = document.getElementById("mainNav");
+
+if (menuToggle && mainNav) {
+    menuToggle.onclick = function () {
+        mainNav.classList.toggle("active");
+    };
+}
+// Ticket Booking Functionality
+
+const bookingForm = document.getElementById("bookingForm");
+
+if (bookingForm) {
+    bookingForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const quantity = Number(document.getElementById("quantity").value);
+
+        const match = bookingForm.querySelector(
+    'select[name="match"]'
+)?.value || "Unknown Match";
+
+const stand = bookingForm.querySelector(
+    'select[name="stand"]'
+)?.value || "General";
+
+const prices = {
+    General: 1000,
+    Premium: 2500,
+    VIP: 5000
+};
+
+const total = (prices[stand] || 1000) * quantity;
+
+const booking = {
+    id: "IPL" + Date.now(),
+    name: name,
+    email: email,
+    phone: phone,
+    match: match,
+    stand: stand,
+    quantity: quantity,
+    total: total
+};
+
+const bookings = JSON.parse(
+    localStorage.getItem("iplBookings") || "[]"
+);
+
+bookings.push(booking);
+
+localStorage.setItem(
+    "iplBookings",
+    JSON.stringify(bookings)
+);
+displayBookings();
+
+        alert("Booking Successful! Thank you, " + name);
+
+        bookingForm.reset();
+    });
+}
+// Display saved bookings
+
+function displayBookings() {
+    const tableBody = document.getElementById("bookingsTableBody");
+    const message = document.getElementById("noBookingsMessage");
+
+    if (!tableBody) return;
+
+    const bookings = JSON.parse(
+        localStorage.getItem("iplBookings") || "[]"
+    );
+
+    tableBody.innerHTML = "";
+
+    if (message) {
+        message.style.display = bookings.length === 0 ? "block" : "none";
+    }
+
+    bookings.forEach(function(booking) {
+        const row = tableBody.insertRow();
+
+        [
+            booking.id,
+            booking.name,
+            booking.match,
+            booking.stand,
+            booking.quantity,
+            "₹" + booking.total
+        ].forEach(function(value) {
+            const cell = row.insertCell();
+            cell.textContent = value ?? "";
+        });
+    });
+}
+
+displayBookings();
